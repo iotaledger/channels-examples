@@ -30,7 +30,7 @@ fn main() -> Fallible<()> {
     let list = receive_messages(&mut client, &announcement_link)?;
     for tx in list.iter() {
         let header = tx.parse_header()?;
-        println!("Found {} message", header.content_type());
+        println!("Found and authenticated {} message", header.content_type());
     }
     Ok(())
 }

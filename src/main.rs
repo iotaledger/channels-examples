@@ -18,6 +18,7 @@ T: Transport,
     println!("tag: {}", announcement_result.link.msgid.to_string());
     // Convert the message to a bundle and send it to a node
     client.send_message(&announcement_result)?;
+    println!("Announced a new channel");
     Ok(())
 }
 

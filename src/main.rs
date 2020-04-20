@@ -25,7 +25,7 @@ fn main() {
     // Connect to a node and pass this object to the function
     let mut client = iota_client::Client::new("https://nodes.devnet.iota.org:443");
     // Change the default settings to use a lower minimum weight magnitude for the Devnet
-    let mut send_opt = SendTrytesOptions::default();
+    let send_opt = SendTrytesOptions::default();
     // default is 14
     send_opt.min_weight_magnitude = 9; 
     match start_a_new_channel(&mut client, send_opt) {

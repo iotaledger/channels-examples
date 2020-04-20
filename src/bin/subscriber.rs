@@ -1,8 +1,8 @@
-use failure::{Fallible};
 use iota_lib_rs::prelude::iota_client;
 use iota_streams::app_channels::{
     api::tangle::{Address, Message, Transport}
 };
+use failure::{Fallible};
 
 fn receive_messages<T>(client: &mut T, link: &Address) -> Fallible<Vec<Message>>
 where
@@ -25,7 +25,7 @@ fn main() -> Fallible<()> {
     // Convert the channel address and message identifier to a Tangle Address type
     let announcement_link = Address::from_str(channel_address, message_identifier).unwrap();
 
-    println!("Loading Announcement Message");
+    println!("Receiving announcement message");
     // Use the IOTA client to find transactions with the corresponding channel address and tag
     let list = receive_messages(&mut client, &announcement_link)?;
     for tx in list.iter() {

@@ -17,12 +17,12 @@ fn main() -> Fallible<()> {
     // tangle client
     let mut client = iota_client::Client::new("https://nodes.devnet.iota.org:443");
 
-    // Subscribers need to channel address and the message identifier to be able to find messages on a channel
+    // Subscribers need the channel address and the message identifier to be able to find messages on a channel
     let channel_address =
         "VZGHRWHIYKQBOMWSNRFGT9VAXPZASVOPGLYHBIV9NTTAAVAVHTMOZO9XHDDRDGADHRPJWWGJJEWLWPQXY";
     let message_identifier = "UV9QBYJRVURWYGFIZENHOLUL9DD";
 
-    // Convert the channel address and message identifier to a Tangle Address type
+    // Convert the channel address and message identifier to a link
     let announcement_link = Address::from_str(channel_address, message_identifier).unwrap();
 
     println!("Receiving announcement message");

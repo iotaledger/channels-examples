@@ -13,7 +13,7 @@ fn start_a_new_channel<T: Transport>(client: &mut T, send_opt: T::SendOptions) -
     // Create an `Announce` message to start the channel
     let announcement = author.announce()?;
     // Print the information that needs to be sent to subscribers before they can read the message
-    println!("tag: {}", announcement.link.msgid.to_string());
+    println!("Message identifier: {}", announcement.link.msgid.to_string());
 
     // Convert the message to a bundle and send it to a node
     client.send_message_with_options(&announcement, send_opt)?;

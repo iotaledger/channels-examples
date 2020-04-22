@@ -27,7 +27,8 @@ fn main() {
     // Change the default settings to use a lower minimum weight magnitude for the Devnet
     let mut send_opt = SendTrytesOptions::default();
     // default is 14
-    send_opt.min_weight_magnitude = 9; 
+    send_opt.min_weight_magnitude = 9;
+    send_opt.local_pow = false;
     match start_a_new_channel(&mut client, send_opt) {
         Ok(()) => (),
         Err(error) => println!("failed with error {}", error),

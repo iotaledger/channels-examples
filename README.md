@@ -34,7 +34,7 @@ To get started you need [Git](https://git-scm.com/book/en/v2/Getting-Started-Ins
 3. Read and authenticate the message as a subscriber
 
     ```bash
-    cargo run --release --bin get_announcement
+    cargo run --release --bin subscriber
     ```
 
   In the console, you should see that the subscriber was able to receive and authenticate the message.

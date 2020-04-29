@@ -55,11 +55,11 @@ To get started you need [Git](https://git-scm.com/book/en/v2/Getting-Started-Ins
     }
     ```
 
-    :::info:Keep the private payload empty
+    **Note:** Keep the private payload empty.
+
     The `private_payload` argument is encrypted only if you link the `SignedPacket` message to a `Keyload` message.
 
     In this case, you link the message to an `Announce` message, so the `private_payload` argument would not be encrypted anyway.
-    :::  
 
 6. Comment out the following code so that you don't publish another instance of the channel
 

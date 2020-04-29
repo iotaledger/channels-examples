@@ -30,7 +30,7 @@ To get started you need [Git](https://git-scm.com/book/en/v2/Getting-Started-Ins
 
     It may take a minute or two to download and compile the dependencies.
 
-    In the console, you should see that the messages were sent.
+    In the console, you should see that the message was sent.
 
     ```bash
     Channel address: ESSPLXFXCODZEDRDZ9MEVSQAEDB9ENELCZD9YEWJZTMWFEPSONIMPATCBTKBOSEX9KCESXEWD9MIZSAPT

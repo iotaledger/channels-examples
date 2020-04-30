@@ -42,7 +42,7 @@ fn main() {
     // REPLACE WITH YOUR OWN MESSAGE IDENTIFIER
     let announce_message_identifier = "RACLH9SDQZEYXOLWFG9WOLVDQHT";
 
-    let public_payload = "MYPUBLICMESSAGE";
+    let public_payload = "NOTICE: Breaking changes to the API, please open this message for more information";
     let private_payload = "";
 
     match send_signed_message(&mut author, channel_address, (&announce_message_identifier).to_string(), public_payload.to_string(), private_payload.to_string(), &mut client, send_opt){

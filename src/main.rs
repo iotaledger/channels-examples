@@ -41,9 +41,8 @@ fn main() {
     let announce_message_identifier = "RACLH9SDQZEYXOLWFG9WOLVDQHT";
 
     let public_payload = "BREAKINGCHANGES";
-    let private_payload = "";
 
-    match send_signed_message(&mut author, &channel_address, &announce_message_identifier.to_string(), &public_payload.to_string(), &private_payload.to_string(), &mut client, send_opt){
+    match send_signed_message(&mut author, &channel_address, &announce_message_identifier.to_string(), &public_payload.to_string(), &mut client, send_opt){
         Ok(()) => (),
         Err(error) => println!("Failed with error {}", error),
     }

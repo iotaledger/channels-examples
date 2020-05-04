@@ -28,9 +28,9 @@ To get started you need [Git](https://git-scm.com/book/en/v2/Getting-Started-Ins
     cargo run --release --bin my_channel_app
     ```
 
-    It may take a minute or two to download and compile the dependencies.
-
-    In the console, you should see that the message was sent.
+    When you run this command for the first time, it may take a minute or two to download and compile the dependencies.
+    
+    In the console, you should see that the messages were sent.
 
     ```bash
     Channel address: ESSPLXFXCODZEDRDZ9MEVSQAEDB9ENELCZD9YEWJZTMWFEPSONIMPATCBTKBOSEX9KCESXEWD9MIZSAPT
@@ -55,9 +55,7 @@ To get started you need [Git](https://git-scm.com/book/en/v2/Getting-Started-Ins
     }
     ```
 
-    **Note:** Keep the private payload empty.
-
-    The `private_payload` argument is encrypted only if you link the `SignedPacket` message to a `Keyload` message.
+    **Note:** The `private_payload` argument is encrypted only if you link the `SignedPacket` message to a `Keyload` message.
 
     In this case, you link the message to an `Announce` message, so the `private_payload` argument would not be encrypted anyway.
 
@@ -73,7 +71,11 @@ To get started you need [Git](https://git-scm.com/book/en/v2/Getting-Started-Ins
     */
     ```
 
-    **Note:** Authors should publish only one instance of a channel. Otherwise, subscribers will not know which channel to use.
+    :::info:
+    Authors should publish only one instance of a channel.
+
+    Otherwise, subscribers will not know which channel to use.
+    :::
 
 7. Send the signed message
 
@@ -108,7 +110,7 @@ To get started you need [Git](https://git-scm.com/book/en/v2/Getting-Started-Ins
     Found and verified STREAMS9CHANNEL9ANNOUNCE message
     Receiving signed messages
     Found and verified messages
-    Public message: MYPUBLICMESSAGE, private message: 
+    Public message: BREAKINGCHANGES, private message: 
     ```
 
 ## Supporting the project

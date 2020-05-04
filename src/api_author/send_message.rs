@@ -7,14 +7,15 @@ use std::str::FromStr;
 use std::string::ToString;
 use failure::Fallible;
 
-pub fn send_signed_message<T: Transport>(author: &mut Author, channel_address: &String, announce_message_identifier: &String, public_payload: &String, private_payload: &String, client: &mut T, send_opt: T::SendOptions ) -> Fallible<()> {
+pub fn send_signed_message<T: Transport>(author: &mut Author, channel_address: &String, announce_message_identifier: &String, public_payload: &String, client: &mut T, send_opt: T::SendOptions ) -> Fallible<()> {
 
     let public_payload = Trytes(Tbits::from_str(&public_payload).unwrap());
-    let private_payload = Trytes(Tbits::from_str(&private_payload).unwrap());
+
+    let empty_private_payload = Trytes(Tbits::from_str("").unwrap());
 
     let announcement_link = Address::from_str(&channel_address, &announce_message_identifier).unwrap();
 
-    let message = author.sign_packet(&announcement_link, &public_payload, &private_payload)?;
+    let message = author.sign_packet(&announcement_link, &public_payload, &empty_private_payload)?;
 
     // Print the information that needs to be sent to subscribers before they can read the message
     // You may want to send this identifier to the subscribers at this point

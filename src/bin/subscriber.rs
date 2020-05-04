@@ -8,7 +8,7 @@ use iota_lib_rs::prelude::iota_client;
 //use iota_streams::app::transport::tangle::client::SendTrytesOptions;
 use failure::{Fallible, ensure};
 
-fn get_messages<T: Transport>(subscriber: &mut Subscriber, channel_address: String, signed_message_identifier: String, client: &mut T, recv_opt: T::RecvOptions) -> Fallible<()> {
+fn get_messages<T: Transport>(subscriber: &mut Subscriber, channel_address: &String, signed_message_identifier: &String, client: &mut T, recv_opt: T::RecvOptions) -> Fallible<()> {
     // Convert the channel address and message identifier to a link
     let message_link = Address::from_str(&channel_address, &signed_message_identifier).unwrap();
  
@@ -29,7 +29,7 @@ fn get_messages<T: Transport>(subscriber: &mut Subscriber, channel_address: Stri
     Ok(())
 }
 
-fn get_announcement<T: Transport>(subscriber: &mut Subscriber, channel_address: String, announce_message_identifier: String, client: &mut T, recv_opt: T::RecvOptions) -> Fallible<()> {
+fn get_announcement<T: Transport>(subscriber: &mut Subscriber, channel_address: &String, announce_message_identifier: &String, client: &mut T, recv_opt: T::RecvOptions) -> Fallible<()> {
     // Convert the channel address and message identifier to a link
     let announcement_link = Address::from_str(&channel_address, &announce_message_identifier).unwrap();
  
@@ -100,7 +100,7 @@ fn get_announcement_and_subscribe<T: Transport>(subscriber: &mut Subscriber, cha
 
     let recv_opt = ();
 
-    match get_announcement(&mut subscriber, channel_address.to_string(), announce_message_identifier.to_string(), &mut client, recv_opt){
+    match get_announcement(&mut subscriber, &channel_address.to_string(), &announce_message_identifier.to_string(), &mut client, recv_opt){
         Ok(()) => (),
         Err(error) => println!("Failed with error {}", error),
     }
@@ -108,7 +108,7 @@ fn get_announcement_and_subscribe<T: Transport>(subscriber: &mut Subscriber, cha
     // REPLACE WITH YOUR OWN MESSAGE IDENTIFIER
     let signed_message_identifier = "ICOTSLXXTKVXDNWFPG9LOFUQRJS";
 
-    match get_messages(&mut subscriber, channel_address.to_string(), signed_message_identifier.to_string(), &mut client, recv_opt){
+    match get_messages(&mut subscriber, &channel_address.to_string(), &signed_message_identifier.to_string(), &mut client, recv_opt){
         Ok(()) => (),
         Err(error) => println!("Failed with error {}", error),
     }

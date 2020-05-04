@@ -5,9 +5,9 @@ use iota_streams::{
 };
 use iota_lib_rs::prelude::iota_client;
 use iota_streams::app::transport::tangle::client::SendTrytesOptions;
-use crate::author::announce::start_a_new_channel;
-use crate::author::send_message::send_signed_message;
-mod author;
+use crate::api_author::announce::start_a_new_channel;
+use crate::api_author::send_message::send_signed_message;
+mod api_author;
 
 fn main() {
 
@@ -36,16 +36,14 @@ fn main() {
         Ok(()) => (),
         Err(error) => println!("Failed with error {}", error),
     }
-
+  
     /*
-
-    // REPLACE WITH YOUR OWN MESSAGE IDENTIFIER
     let announce_message_identifier = "RACLH9SDQZEYXOLWFG9WOLVDQHT";
 
-    let public_payload = "MYPUBLICMESSAGE";
+    let public_payload = "NOTICE: BREAKING CHANGES";
     let private_payload = "";
 
-    match send_signed_message(&mut author, channel_address, (&announce_message_identifier).to_string(), public_payload.to_string(), private_payload.to_string(), &mut client, send_opt){
+    match send_signed_message(&mut author, &channel_address, &announce_message_identifier.to_string(), &public_payload.to_string(), &private_payload.to_string(), &mut client, send_opt){
         Ok(()) => (),
         Err(error) => println!("Failed with error {}", error),
     }

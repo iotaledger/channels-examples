@@ -22,7 +22,7 @@ fn get_messages<T: Transport>(subscriber: &mut Subscriber, channel_address: &Str
         let header = tx.parse_header()?;
         ensure!(header.check_content_type(message::signed_packet::TYPE));
         let (public_message, private_message) = subscriber.unwrap_signed_packet(header.clone())?;
-        println!("Found and authenticated messages");
+        println!("Found and verified messages");
         println!("Public message: {}, private message: {}", public_message, private_message);
         break;
     }
@@ -43,7 +43,7 @@ fn get_announcement<T: Transport>(subscriber: &mut Subscriber, channel_address: 
         let header = tx.parse_header()?;
         ensure!(header.check_content_type(message::announce::TYPE));
         subscriber.unwrap_announcement(header.clone())?;
-        println!("Found and authenticated {} message", header.content_type());
+        println!("Found and verified {} message", header.content_type());
         break;
     }
     Ok(())
@@ -67,7 +67,7 @@ fn get_announcement_and_subscribe<T: Transport>(subscriber: &mut Subscriber, cha
         let header = tx.parse_header()?;
         ensure!(header.check_content_type(message::announce::TYPE));
         subscriber.unwrap_announcement(header.clone())?;
-        println!("Found and authenticated {} message", header.content_type());
+        println!("Found and verified {} message", header.content_type());
         found_valid_msg = true;
         break;
     }

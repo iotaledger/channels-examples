@@ -99,19 +99,19 @@ To get started you need [Git](https://git-scm.com/book/en/v2/Getting-Started-Ins
     let mut subscriber = Subscriber::new("MYSUBSCRIBERSECRET", true);
     ```
 
-9. Read and authenticate the message
+9. Read and verify the message
 
     ```bash
     cargo run --release --bin subscriber
     ```
 
-    In the console, you should see that the subscriber was able to receive and authenticate the message.
+    In the console, you should see that the subscriber was able to receive and verify the message.
 
     ```
     Receiving announcement messages
-    Found and authenticated STREAMS9CHANNEL9ANNOUNCE message
+    Found and verified STREAMS9CHANNEL9ANNOUNCE message
     Receiving signed messages
-    Found and authenticated messages
+    Found and verified messages
     Public message: MYPUBLICMESSAGE, private message: 
     ```
 

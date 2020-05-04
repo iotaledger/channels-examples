@@ -28,7 +28,7 @@ pub fn get_subscriptions_and_share_keyload<T: Transport>(author: &mut Author, cl
         ensure!(header.check_content_type(message::subscribe::TYPE));
         // Process the message and read the subscribers' keys
         author.unwrap_subscribe(header.clone())?;
-        println!("Found and authenticated {} message", header.content_type());
+        println!("Found and verified {} message", header.content_type());
         found_valid_msg = true;
     }
 

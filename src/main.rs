@@ -36,6 +36,8 @@ fn main() {
         Ok(()) => (),
         Err(error) => println!("Failed with error {}", error),
     }
+  
+    /*
     let announce_message_identifier = "RACLH9SDQZEYXOLWFG9WOLVDQHT";
 
     let public_payload = "BREAKINGCHANGES";
@@ -45,6 +47,7 @@ fn main() {
         Ok(()) => (),
         Err(error) => println!("Failed with error {}", error),
     }
+    */
 
     /* Currently not working as Subscribe messages are inconsistent bundles.
     let recv_opt = ();

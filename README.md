@@ -22,7 +22,7 @@ To get started you need [Git](https://git-scm.com/book/en/v2/Getting-Started-Ins
     let mut author = Author::new("MYAUTHORSECRET", 3, true);
     ```
 
-3. Publish the channel
+3. Start the author and follow the prompts
 
     ```bash
     cargo run --release --bin my_channel_app
@@ -33,85 +33,37 @@ To get started you need [Git](https://git-scm.com/book/en/v2/Getting-Started-Ins
     In the console, you should see that the messages were sent.
 
     ```bash
-    Channel address: ESSPLXFXCODZEDRDZ9MEVSQAEDB9ENELCZD9YEWJZTMWFEPSONIMPATCBTKBOSEX9KCESXEWD9MIZSAPT
-    `Announce` message identifier: RACLH9SDQZEYXOLWFG9WOLVDQHT
+    Creating a new channel
     Channel published
+    Channel address: XP9QADNJGJOJTOIZDOFAOFKXQADWDKTGEMHFBNOZ9HROIPMVWPBTCUPOVKUYRKKAAFQ9XDBVSJMDALVZJ
+    Sending signed message
+    Published signed message
+
+    Now, in a new terminal window, use the subscriber to publish a `Subscribe` message on the channel
+
+    cargo run --release --bin subscriber XP9QADNJGJOJTOIZDOFAOFKXQADWDKTGEMHFBNOZ9HROIPMVWPBTCUPOVKUYRKKAAFQ9XDBVSJMDALVZJ AEFYSYRVRKKW9CPBRMXHYDNJJWK KLKGMAAQGXPHEJLQKIPKYPHEAFE
+
+    Enter the message identifier of the `Subscribe` message that was published by the subscriber:
     ```
 
-4. Copy the message identifier to the clipboard
-
-5. Open the `src/main.rs` file, uncomment the following code, and update the variables with your message identifier and your own public payload:
-
-    ```rust
-    // REPLACE WITH YOUR OWN MESSAGE IDENTIFIER
-    let announce_message_identifier = "RACLH9SDQZEYXOLWFG9WOLVDQHT";
-
-    let public_payload = "MYPUBLICMESSAGE";
-    let private_payload = "";
-
-    match send_signed_message(&mut author, channel_address, (&announce_message_identifier).to_string(), public_payload.to_string(), private_payload.to_string(), &mut client, send_opt){
-        Ok(()) => (),
-        Err(error) => println!("Failed with error {}", error),
-    }
-    ```
-
-    **Note:** The `private_payload` argument is encrypted only if you link the `SignedPacket` message to a `Keyload` message.
-
-    In this case, you link the message to an `Announce` message, so the `private_payload` argument would not be encrypted anyway.
-
-6. Comment out the following code so that you don't publish another instance of the channel
-
-    ```rust
-    /*
-    // Send the `Announce` message
-    match start_a_new_channel(&mut author, &mut client, send_opt) {
-        Ok(()) => (),
-        Err(error) => println!("Failed with error {}", error),
-    }
-    */
-    ```
-
-    :::info:
-    Authors should publish only one instance of a channel.
-
-    Otherwise, subscribers will not know which channel to use.
-    :::
-
-7. Send the signed message
-
-    ```bash
-    cargo run --release --bin my_channel_app
-    ```
-
-    In the console, you should see that the message was sent.
-
-    ```bash
-    `Signed_packet` message identifier: ICOTSLXXTKVXDNWFPG9LOFUQRJS
-    Sent signed message
-    ```
-
-8. Open the `bin/subscriber.rs` file, change the subscriber's secret to something secure, and update the variables with your own channel address and message identifiers
+4. Open the `bin/subscriber.rs` file, and change the subscriber's secret to something secure
 
     ```rust
      // REPLACE THE SECRET WITH YOUR OWN
     let mut subscriber = Subscriber::new("MYSUBSCRIBERSECRET", true);
     ```
 
-9. Read and verify the message
+5. Copy the `cargo run` command and paste it into a new terminal window to start the subscriber
 
     ```bash
-    cargo run --release --bin subscriber
+    cargo run --release --bin subscriber XP9QADNJGJOJTOIZDOFAOFKXQADWDKTGEMHFBNOZ9HROIPMVWPBTCUPOVKUYRKKAAFQ9XDBVSJMDALVZJ AEFYSYRVRKKW9CPBRMXHYDNJJWK KLKGMAAQGXPHEJLQKIPKYPHEAFE
     ```
 
-    In the console, you should see that the subscriber was able to receive and verify the message.
+    The first argument is the channel address, the second argument is the `Annonce` message identifier, the third argument is the `SignedPacket` message identifier
 
-    ```
-    Receiving announcement messages
-    Found and verified STREAMS9CHANNEL9ANNOUNCE message
-    Receiving signed messages
-    Found and verified messages
-    Public message: BREAKINGCHANGES, private message: 
-    ```
+6. Follow the prompts
+
+    In the console, you should see that the subscriber was able to subscribe to the channel and read the encrypted message.
 
 ## Supporting the project
 

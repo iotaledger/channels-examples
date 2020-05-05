@@ -1,20 +1,14 @@
-/*#![cfg_attr(debug_assertions, allow(dead_code, unused_imports))]
+#![cfg_attr(debug_assertions, allow(dead_code, unused_imports))]
 
 use iota_streams::app_channels::{
     api::tangle::{Address, Author, Transport}
     , message
 };
-use std::string::ToString;
 use failure::{Fallible, ensure};
 
 
-pub fn get_subscriptions_and_share_keyload<T: Transport>(author: &mut Author, client: &mut T, send_opt: T::SendOptions, recv_opt: T::RecvOptions) -> Fallible<()> {
+pub fn get_subscriptions_and_share_keyload<T: Transport>(author: &mut Author, channel_address: &String, subscribe_message_identifier: &String, client: &mut T, send_opt: T::SendOptions, recv_opt: T::RecvOptions) -> Fallible<Address> {
     
-    let channel_address = author.channel_address().to_string();
-    
-    // Authors need the message identifier to be able to get the Subscribe message
-    let subscribe_message_identifier = "EILKFPZCKQFGHYHZPJL9KDLWIRZ";
-
     println!("Receiving Subscribe messages");
 
     // Use the IOTA client to find transactions with the corresponding channel address and tag
@@ -36,11 +30,9 @@ pub fn get_subscriptions_and_share_keyload<T: Transport>(author: &mut Author, cl
     ensure!(found_valid_msg);
     println!("Sending keyload");
 
-    // Send a Keyload message that contains a session key for all known subscribers
+    // Publish a Keyload message that contains a session key for all known subscribers
     let keyload = author.share_keyload_for_everyone(&subscription_link)?;
-    println!("Keyload message identifier: {}", keyload.link.msgid);
     client.send_message_with_options(&keyload, send_opt)?;
-    println!("Sent Keyload message");
-    Ok(())
+    println!("Published Keyload message");
+    Ok(keyload.link)
 }
-*/

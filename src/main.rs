@@ -7,6 +7,8 @@ use iota_lib_rs::prelude::iota_client;
 use iota_streams::app::transport::tangle::client::SendTrytesOptions;
 use crate::api_author::announce::start_a_new_channel;
 use crate::api_author::send_message::send_signed_message;
+use crate::api_author::get_subscribers::get_subscriptions_and_share_keyload;
+use crate::api_author::send_private_payload::send_private_payload;
 mod api_author;
 
 fn main() {
@@ -26,33 +28,34 @@ fn main() {
 
     // Create a new channel
     // REPLACE THE SECRET WITH YOUR OWN
-    let mut author = Author::new("MYAUTHORSECRET", 3, true);
+    let mut author = Author::new("MYAUTHORSECRETSTRING", 3, true);
 
     let channel_address = author.channel_address().to_string();
-    println!("Channel address: {}", &channel_address);
-
+    
     // Send the `Announce` message
-    match start_a_new_channel(&mut author, &mut client, send_opt) {
-        Ok(()) => (),
-        Err(error) => println!("Failed with error {}", error),
-    }
+    let announce_message = start_a_new_channel(&mut author, &mut client, send_opt).unwrap();
   
-    /*
-    let announce_message_identifier = "RACLH9SDQZEYXOLWFG9WOLVDQHT";
-
     let public_payload = "BREAKINGCHANGES";
 
-    match send_signed_message(&mut author, &channel_address, &announce_message_identifier.to_string(), &public_payload.to_string(), &mut client, send_opt){
-        Ok(()) => (),
-        Err(error) => println!("Failed with error {}", error),
-    }
-    */
+    let signed_message = send_signed_message(&mut author, &channel_address, &announce_message.msgid.to_string(), &public_payload.to_string(), &mut client, send_opt).unwrap();
 
-    /* Currently not working as Subscribe messages are inconsistent bundles.
+    println!("");
+    println!("Now, in a new terminal window, use the subscriber to publish a `Subscribe` message on the channel");
+    println!("");
+    println!("cargo run --release --bin subscriber {} {} {}", channel_address, announce_message.msgid, signed_message.msgid);
+    println!("");
+
+    let mut subscribe_message_identifier = String::new();
+    println!("Enter the message identifier of the `Subscribe` message that was published by the subscriber:");
+    std::io::stdin().read_line(&mut subscribe_message_identifier).unwrap();
+
     let recv_opt = ();
-    match get_subscriptions_and_share_keyload(&mut author, &mut client, send_opt, recv_opt) {
-        Ok(()) => (),
-        Err(error) => println!("Failed with error {}", error),
-    }
-    */
+    let keyload_message_identifier = get_subscriptions_and_share_keyload(&mut author, &channel_address, &subscribe_message_identifier.to_string(), &mut client, send_opt, recv_opt).unwrap();
+
+    let private_payload = "SUPERSECRETPAYLOAD";
+
+    let signed_private_message = send_private_payload(&mut author, &channel_address, &keyload_message_identifier.to_string(), &public_payload.to_string(), &private_payload.to_string(), &mut client, send_opt).unwrap();
+
+    println!("Paste this message identifier in the subscriber's prompt: {}", signed_private_message.msgid);
+
 }

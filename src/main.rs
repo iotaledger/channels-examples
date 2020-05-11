@@ -5,11 +5,12 @@ use iota_streams::{
 };
 use iota_lib_rs::prelude::iota_client;
 use iota_streams::app::transport::tangle::client::SendTrytesOptions;
+mod api_author;
 use crate::api_author::announce::start_a_new_channel;
 use crate::api_author::send_message::send_signed_message;
 use crate::api_author::get_subscribers::get_subscriptions_and_share_keyload;
-use crate::api_author::send_private_payload::send_private_payload;
-mod api_author;
+use crate::api_author::send_masked_payload::send_masked_payload;
+
 
 fn main() {
 
@@ -28,7 +29,7 @@ fn main() {
 
     // Create a new channel
     // REPLACE THE SECRET WITH YOUR OWN
-    let mut author = Author::new("MYAUTHORSECRETSTRING", 3, true);
+    let mut author = Author::new("MYAUTHORSECRETSTRINGAPWOQ9", 3, true);
 
     let channel_address = author.channel_address().to_string();
     
@@ -49,13 +50,22 @@ fn main() {
     println!("Enter the message identifier of the `Subscribe` message that was published by the subscriber:");
     std::io::stdin().read_line(&mut subscribe_message_identifier).unwrap();
 
+    if subscribe_message_identifier.ends_with('\n') {
+        subscribe_message_identifier.pop();
+    }
+    if subscribe_message_identifier.ends_with('\r') {
+        subscribe_message_identifier.pop();
+    }
+
     let recv_opt = ();
-    let keyload_message_identifier = get_subscriptions_and_share_keyload(&mut author, &channel_address, &subscribe_message_identifier.to_string(), &mut client, send_opt, recv_opt).unwrap();
+    let keyload_message = get_subscriptions_and_share_keyload(&mut author, &channel_address, &mut subscribe_message_identifier, &mut client, send_opt, recv_opt).unwrap();
 
-    let private_payload = "SUPERSECRETPAYLOAD";
+    println!("Paste this `Keyload` message identifier in the subscriber's command prompt: {}", keyload_message.msgid);
 
-    let signed_private_message = send_private_payload(&mut author, &channel_address, &keyload_message_identifier.to_string(), &public_payload.to_string(), &private_payload.to_string(), &mut client, send_opt).unwrap();
+    let masked_payload = "SUPERSECRETPAYLOAD";
 
-    println!("Paste this message identifier in the subscriber's prompt: {}", signed_private_message.msgid);
+    let signed_private_message = send_masked_payload(&mut author, &channel_address, &keyload_message.msgid.to_string(), &public_payload.to_string(), &masked_payload.to_string(), &mut client, send_opt).unwrap();
+
+    println!("Paste this `SignedPacket` message identifier in the subscriber's command prompt: {}", signed_private_message.msgid);
 
 }

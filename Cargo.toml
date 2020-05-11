@@ -1,5 +1,5 @@
 [package]
-name = "my_channel_app"
+name = "author"
 version = "0.1.0"
 authors = ["JakeSCahill <jake.cahill@iota.org>"]
 edition = "2018"
@@ -9,4 +9,4 @@ edition = "2018"
 [dependencies]
 iota-streams = { git = "https://github.com/iotaledger/streams" }
 failure = "0.1"
-iota-lib-rs = "0.4"
+iota-lib-rs = "0.4.1"

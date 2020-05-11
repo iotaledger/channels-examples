@@ -4,7 +4,7 @@ use iota_streams::app_channels::{
     api::tangle::{Address, Author, Transport}
     , message
 };
-use failure::{Fallible, ensure};
+use failure::{Fallible, ensure, bail};
 
 
 pub fn get_subscriptions_and_share_keyload<T: Transport>(author: &mut Author, channel_address: &String, subscribe_message_identifier: &String, client: &mut T, send_opt: T::SendOptions, recv_opt: T::RecvOptions) -> Fallible<Address> {
@@ -12,10 +12,14 @@ pub fn get_subscriptions_and_share_keyload<T: Transport>(author: &mut Author, ch
     println!("Receiving Subscribe messages");
 
     // Use the IOTA client to find transactions with the corresponding channel address and tag
-    let subscription_link = Address::from_str(&channel_address, &subscribe_message_identifier).unwrap();
+
+    let subscription_link = match Address::from_str(&channel_address, &subscribe_message_identifier) {
+        Ok(subscription_link) => subscription_link,
+        Err(()) => bail!("Failed to create Address from {}:{}", &channel_address, &subscribe_message_identifier),
+    };
     let subscribers = client.recv_messages_with_options(&subscription_link, recv_opt)?;
     
-    // Iterate through all the transactions and stop at the first valid message
+    // Iterate through all the transactions
     let mut found_valid_msg = false;
     for tx in subscribers.iter() {
         let header = tx.parse_header()?;
@@ -30,7 +34,7 @@ pub fn get_subscriptions_and_share_keyload<T: Transport>(author: &mut Author, ch
     ensure!(found_valid_msg);
     println!("Sending keyload");
 
-    // Publish a Keyload message that contains a session key for all known subscribers
+    // Publish a Keyload message for all the subscribers whose `Subscribe` messages have been processed
     let keyload = author.share_keyload_for_everyone(&subscription_link)?;
     client.send_message_with_options(&keyload, send_opt)?;
     println!("Published Keyload message");

@@ -25,12 +25,12 @@ To get started you need [Git](https://git-scm.com/book/en/v2/Getting-Started-Ins
 3. Start the author and follow the prompts
 
     ```bash
-    cargo run --release --bin my_channel_app
+    cargo run --release --bin author
     ```
 
     When you run this command for the first time, it may take a minute or two to download and compile the dependencies.
     
-    In the console, you should see that the messages were sent.
+    In the console, you should see something like the following:
 
     ```bash
     Creating a new channel
@@ -59,7 +59,9 @@ To get started you need [Git](https://git-scm.com/book/en/v2/Getting-Started-Ins
     cargo run --release --bin subscriber XP9QADNJGJOJTOIZDOFAOFKXQADWDKTGEMHFBNOZ9HROIPMVWPBTCUPOVKUYRKKAAFQ9XDBVSJMDALVZJ AEFYSYRVRKKW9CPBRMXHYDNJJWK KLKGMAAQGXPHEJLQKIPKYPHEAFE
     ```
 
-    The first argument is the channel address, the second argument is the `Annonce` message identifier, the third argument is the `SignedPacket` message identifier
+    The first argument is the channel address, the second argument is the `Announce` message identifier, and the third argument is the `SignedPacket` message identifier.
+
+    The subscriber needs all this information to get the messages from the channel.
 
 6. Follow the prompts
 
@@ -67,7 +69,7 @@ To get started you need [Git](https://git-scm.com/book/en/v2/Getting-Started-Ins
 
 ## Supporting the project
 
-Channels is an alpha project that is being developed as a built-in application of the Streams framework.
+Channels is an alpha project that is being developed as a built-in protocol of the Streams framework.
 
 If you want to support the sample code in this repository, consider:
 

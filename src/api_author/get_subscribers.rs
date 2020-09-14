@@ -43,5 +43,5 @@ pub fn get_subscriptions_and_share_keyload<T: Transport>(author: &mut Author, ch
     println!("Sequenced message at {}", &keyload.1.clone().unwrap().link.msgid);
     
     println!("Published keyload message");
-    Ok(keyload.1.clone().unwrap().link)
+    Ok(keyload.1.unwrap().link)
 }

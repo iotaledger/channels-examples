@@ -23,9 +23,9 @@ pub fn send_masked_payload<T: Transport>(author: &mut Author, channel_address: &
     // Convert the message to a bundle and send it to a node
     client.send_message_with_options(&message.0, send_opt).unwrap();
     client.send_message_with_options(&message.1.clone().unwrap(), send_opt).unwrap();
-    println!("Keyload message at {}", &message.0.link.msgid);
+    println!("Masked message at {}", &message.0.link.msgid);
     println!("Sequenced message at {}", &message.1.clone().unwrap().link.msgid);
     
     println!("Published private payload");
-    Ok(message.1.clone().unwrap().link)
+    Ok(message.1.unwrap().link)
 }

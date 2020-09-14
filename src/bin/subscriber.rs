@@ -61,9 +61,7 @@ T::RecvOptions: Copy, {
 }
 
 fn get_announcement<T: Transport>(subscriber: &mut Subscriber, channel_address: &String, announce_message_identifier: &String, client: &mut T, recv_opt: T::RecvOptions) -> Fallible<()> 
-where
-    T::SendOptions: Copy,
-    T::RecvOptions: Copy, {
+where T::RecvOptions: Copy, {
     
     // Convert the channel address and message identifier to a link
     let announcement_link = match Address::from_str(&channel_address, &announce_message_identifier){
@@ -87,9 +85,8 @@ where
     Ok(())
 }
 
-fn get_keyload<T: Transport>(subscriber: &mut Subscriber, channel_address: &String, keyload_message_identifier: &String, client: &mut T, recv_opt: T::RecvOptions) -> Fallible<()> where
-T::SendOptions: Copy,
-T::RecvOptions: Copy, {
+fn get_keyload<T: Transport>(subscriber: &mut Subscriber, channel_address: &String, keyload_message_identifier: &String, client: &mut T, recv_opt: T::RecvOptions) -> Fallible<()> 
+where T::RecvOptions: Copy, {
     
      // Convert the channel address and message identifier to an Address link type
      let keyload_link = match Address::from_str(&channel_address, &keyload_message_identifier) {
@@ -126,9 +123,7 @@ T::RecvOptions: Copy, {
 
 
 fn subscribe<T: Transport>(subscriber: &mut Subscriber, channel_address: &String, announce_message_identifier: &String, client: &mut T, send_opt: T::SendOptions) 
-    -> Fallible<()> where
-    T::SendOptions: Copy,
-    T::RecvOptions: Copy, {
+    -> Fallible<()> where T::RecvOptions: Copy, {
 
      // Convert the channel address and message identifier to a link
      let announcement_link = match Address::from_str(&channel_address, &announce_message_identifier){

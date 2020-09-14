@@ -67,11 +67,9 @@ fn main() {
         channel_address, 
         announce_message.msgid.to_string(), 
         signed_message.msgid.to_string());
-    println!("cargo run --release --bin subscriber {} {} {}", 
-        bits_to_trytes(author.channel_address().tbits()), 
-        bits_to_trytes(announce_message.msgid.tbits()), 
-        bits_to_trytes(signed_message.msgid.tbits()));
-    println!("");
+    println!("Tangle Address/channel: {}", bits_to_trytes(author.channel_address().tbits())); 
+    println!("Tangle announce_message tag: {}", bits_to_trytes(signed_message.msgid.tbits())); 
+    println!("Tangle signed_message tag: {}", bits_to_trytes(signed_message.msgid.tbits())); 
 
     let mut subscribe_message_identifier = String::new();
     println!("Enter the message identifier of the `Subscribe` message that was published by the subscriber:");

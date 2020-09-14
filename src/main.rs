@@ -3,33 +3,53 @@
 use iota_streams::{
     app_channels::api::tangle::{Author}
 };
-use iota_lib_rs::prelude::iota_client;
-use iota_streams::app::transport::tangle::client::SendTrytesOptions;
+use iota::client as iota_client;
+
 mod api_author;
 use crate::api_author::announce::start_a_new_channel;
 use crate::api_author::send_message::send_signed_message;
 use crate::api_author::get_subscribers::get_subscriptions_and_share_keyload;
 use crate::api_author::send_masked_payload::send_masked_payload;
 
+use iota_streams::app::{
+    transport::tangle::{
+        PAYLOAD_BYTES,
+        client::{
+            SendTrytesOptions,
+            RecvOptions
+        }
+    }
+};
+use std::str::Bytes;
+use iota::{
+    ternary as iota_ternary,
+};
+use core::convert::{
+    TryInto,
+};
 
 fn main() {
 
     //  -------- IOTA network settings ---------
 
     // Connect to an IOTA node
-    let mut client = iota_client::Client::new("https://nodes.devnet.iota.org:443");
+    let mut client = iota_client::Client::get();
+    iota_client::Client::add_node("https://nodes.devnet.iota.org:443").unwrap();
 
     // Change the default settings to use a lower minimum weight magnitude for the Devnet
     let mut send_opt = SendTrytesOptions::default();
     // default is 14
     send_opt.min_weight_magnitude = 9;
     send_opt.local_pow = false;
+    
+    let encoding = "utf-8";
 
     // --------------- Author -------------------
 
     // Create a new channel
     // REPLACE THE SECRET WITH YOUR OWN
-    let mut author = Author::new("MYAUTHORSECRETSTRINGAPWOQ9", 3, true);
+    let multi_branching_flag = 1_u8;
+    let mut author = Author::new("MYAUTHORSECRETSTRINGA99999", encoding, PAYLOAD_BYTES, multi_branching_flag == 1_u8);
 
     let channel_address = author.channel_address().to_string();
     
@@ -42,8 +62,15 @@ fn main() {
 
     println!("");
     println!("Now, in a new terminal window, use the subscriber to publish a `Subscribe` message on the channel");
-    println!("");
-    println!("cargo run --release --bin subscriber {} {} {}", channel_address, announce_message.msgid, signed_message.msgid);
+    println!("");    
+    println!("cargo run --release --bin subscriber {} {} {}", 
+        channel_address, 
+        announce_message.msgid.to_string(), 
+        signed_message.msgid.to_string());
+    println!("cargo run --release --bin subscriber {} {} {}", 
+        bits_to_trytes(author.channel_address().tbits()), 
+        bits_to_trytes(announce_message.msgid.tbits()), 
+        bits_to_trytes(signed_message.msgid.tbits()));
     println!("");
 
     let mut subscribe_message_identifier = String::new();
@@ -57,7 +84,7 @@ fn main() {
         subscribe_message_identifier.pop();
     }
 
-    let recv_opt = ();
+    let recv_opt = RecvOptions::default();
     let keyload_message = get_subscriptions_and_share_keyload(&mut author, &channel_address, &mut subscribe_message_identifier, &mut client, send_opt, recv_opt).unwrap();
 
     println!("Paste this `Keyload` message identifier in the subscriber's command prompt: {}", keyload_message.msgid);
@@ -68,4 +95,24 @@ fn main() {
 
     println!("Paste this `SignedPacket` message identifier in the subscriber's command prompt: {}", signed_private_message.msgid);
 
+}
+
+fn bits_to_trytes(input: &Vec<u8>) -> String {
+    let mut trytes: std::vec::Vec<u8> = Vec::with_capacity(input.len() * 2);
+    for byte in input {
+        let first: i8 = match (byte % 27) as i8 {
+            b @ 0..=13 => b,
+            b @ 14..=26 => b - 27,
+            _ => unreachable!(),
+        };
+        let second = match (byte / 27) as i8 {
+            b @ 0..=13 => b,
+            b @ 14..=26 => b - 27,
+            _ => unreachable!(),
+        };
+
+        trytes.push(char::from(TryInto::<iota_ternary::Tryte>::try_into(first).unwrap()) as u8);
+        trytes.push(char::from(TryInto::<iota_ternary::Tryte>::try_into(second).unwrap()) as u8);
+    }
+    String::from_utf8(trytes).unwrap()
 }

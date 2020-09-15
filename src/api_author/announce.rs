@@ -5,7 +5,7 @@ use iota_streams::app_channels::api::tangle::{Author, Transport, Address};
 pub fn start_a_new_channel<T: Transport>(author: &mut Author, client: &mut T, send_opt: T::SendOptions) -> Result<Address> {
 
     // Create an `Announce` message to start the channel
-    let announcement = author.announce().unwrap();
+    let announcement = author.announce()?;
 
     println!("Creating a new channel");
 

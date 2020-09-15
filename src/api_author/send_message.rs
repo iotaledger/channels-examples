@@ -23,12 +23,16 @@ pub fn send_signed_message<T: Transport>(author: &mut Author, channel_address: &
 
     println!("Sending signed message");
 
-    // Convert the message to a bundle and send it to a node
-    client.send_message_with_options(&message.0, send_opt)?;
-    client.send_message_with_options(&message.1.clone().unwrap(), send_opt)?;
-    println!("Signed message at {}", &message.0.link.msgid);
-    println!("Sequenced message at {}", &message.1.clone().unwrap().link.msgid);
+    let mut ret_link = message.0;
+    client.send_message_with_options(&ret_link, send_opt)?;
+    println!("Signed message at {}", &ret_link.link.msgid);
+
+    if message.1.is_some() {
+        ret_link = message.1.unwrap();
+        client.send_message_with_options(&ret_link, send_opt)?;
+        println!("Sequenced message at {}", &ret_link.link.msgid);
+    }
     
     println!("Published signed message");
-    Ok(message.1.unwrap().link)
+    Ok(ret_link.link)
 }

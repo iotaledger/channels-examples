@@ -35,12 +35,16 @@ pub fn get_subscriptions_and_share_keyload<T: Transport>(author: &mut Author, ch
 
     // Publish a Keyload message for all the subscribers whose `Subscribe` messages have been processed
     let keyload = author.share_keyload_for_everyone(&subscription_link)?;
-    // Convert the message to a bundle and send it to a node
-    client.send_message_with_options(&keyload.0, send_opt)?;
-    client.send_message_with_options(&keyload.1.clone().unwrap(), send_opt)?;
-    println!("Keyload message at {}", &keyload.0.link.msgid);
-    println!("Sequenced message at {}", &keyload.1.clone().unwrap().link.msgid);
+    let mut ret_link = keyload.0;
+    client.send_message_with_options(&ret_link, send_opt)?;
+    println!("Signed message at {}", &ret_link.link.msgid);
+
+    if keyload.1.is_some() {
+        ret_link = keyload.1.unwrap();
+        client.send_message_with_options(&ret_link, send_opt)?;
+        println!("Sequenced message at {}", &ret_link.link.msgid);
+    }
     
-    println!("Published keyload message");
-    Ok(keyload.1.unwrap().link)
+    println!("Published signed message");
+    Ok(ret_link.link)
 }

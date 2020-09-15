@@ -48,8 +48,8 @@ fn main() {
 
     // Create a new channel
     // REPLACE THE SECRET WITH YOUR OWN
-    let multi_branching_flag = 1_u8;
-    let mut author = Author::new("MYAUTHORSECRETSTRINGAPWOQ9", encoding, PAYLOAD_BYTES, multi_branching_flag == 1_u8);
+    let multi_branching_flag = false;
+    let mut author = Author::new("MYAUTHORSEC9ETSTRINGAPWOQ9", encoding, PAYLOAD_BYTES, multi_branching_flag);
 
     let channel_address = author.channel_address().to_string();
     
@@ -65,8 +65,8 @@ fn main() {
     println!("");    
     println!("cargo run --release --bin subscriber {} {} {}", 
         channel_address, 
-        announce_message.msgid.to_string(), 
-        signed_message.msgid.to_string());
+        announce_message.msgid, 
+        signed_message.msgid);
     println!("Tangle Address/channel: {}", bytes_to_trytes(author.channel_address().tbits())); 
     println!("Tangle announce_message tag: {}", bytes_to_trytes(announce_message.msgid.tbits())); 
     println!("Tangle signed_message tag: {}", bytes_to_trytes(signed_message.msgid.tbits())); 

@@ -15,11 +15,10 @@ use iota_streams::app::transport::tangle::{
         RecvOptions
     }
 };
-
-use failure::{Fallible, ensure, bail};
+use anyhow::{Result, ensure, bail};
 use std::env;
 
-fn get_signed_messages<T: Transport>(subscriber: &mut Subscriber, channel_address: &String, signed_message_identifier: &String, client: &mut T, recv_opt: T::RecvOptions) -> Fallible<()> 
+fn get_signed_messages<T: Transport>(subscriber: &mut Subscriber, channel_address: &String, signed_message_identifier: &String, client: &mut T, recv_opt: T::RecvOptions) -> Result<()> 
 where
 T::SendOptions: Copy,
 T::RecvOptions: Copy, {
@@ -32,26 +31,24 @@ T::RecvOptions: Copy, {
  
     println!("Receiving signed messages");
 
-    let msg = client
-            .recv_message_with_options(&message_link, recv_opt)
-            .unwrap();
-    let preparsed = msg.parse_header().unwrap();
+    let msg = client.recv_message_with_options(&message_link, recv_opt)?;
+    let preparsed = msg.parse_header()?;
     ensure!(
         preparsed.check_content_type(&message::SEQUENCE),
         "Wrong message type: {}",
         preparsed.header.content_type
     );
-    let msg_tag = subscriber.unwrap_sequence(preparsed.clone()).unwrap();
+    let msg_tag = subscriber.unwrap_sequence(preparsed.clone())?;
 
     // Use the IOTA client to find transactions with the corresponding channel address and tag
-    let list = client.recv_messages_with_options(&msg_tag, recv_opt).unwrap();
+    let list = client.recv_messages_with_options(&msg_tag, recv_opt)?;
     
 
     // Iterate through all the transactions and stop at the first valid message
     for tx in list.iter() {
-        let header = tx.parse_header().unwrap();
-        ensure!(header.check_content_type(&message::SIGNED_PACKET));
-        let (public_payload, masked_payload) = subscriber.unwrap_signed_packet(header.clone()).unwrap();
+        let header = tx.parse_header()?;
+        ensure!(header.check_content_type(&message::SIGNED_PACKET), "Content type should be signed type");
+        let (public_payload, masked_payload) = subscriber.unwrap_signed_packet(header.clone())?;
         println!("Found and verified messages");
         println!("Public message: {:?}, private message: {:?}", 
             String::from_utf8(public_payload.0), String::from_utf8(masked_payload.0));
@@ -60,7 +57,7 @@ T::RecvOptions: Copy, {
     Ok(())
 }
 
-fn get_announcement<T: Transport>(subscriber: &mut Subscriber, channel_address: &String, announce_message_identifier: &String, client: &mut T, recv_opt: T::RecvOptions) -> Fallible<()> 
+fn get_announcement<T: Transport>(subscriber: &mut Subscriber, channel_address: &String, announce_message_identifier: &String, client: &mut T, recv_opt: T::RecvOptions) -> Result<()> 
 where T::RecvOptions: Copy, {
     
     // Convert the channel address and message identifier to a link
@@ -72,20 +69,19 @@ where T::RecvOptions: Copy, {
     println!("Receiving announcement messages");
 
     // Use the IOTA client to find transactions with the corresponding channel address and tag
-    let list = client.recv_messages_with_options(&announcement_link, recv_opt).unwrap();
+    let list = client.recv_messages_with_options(&announcement_link, recv_opt)?;
     // Iterate through all the transactions and stop at the first valid message
     for tx in list.iter() {
-        let header = tx.parse_header().unwrap();
-        dbg!(&header);
-        ensure!(header.check_content_type(&message::ANNOUNCE));
-        subscriber.unwrap_announcement(header.clone()).unwrap();
+        let header = tx.parse_header()?;
+        ensure!(header.check_content_type(&message::ANNOUNCE), "Content type should be announce type");
+        subscriber.unwrap_announcement(header.clone())?;
         println!("Found and verified {} message", header.content_type());
         break;
     }
     Ok(())
 }
 
-fn get_keyload<T: Transport>(subscriber: &mut Subscriber, channel_address: &String, keyload_message_identifier: &String, client: &mut T, recv_opt: T::RecvOptions) -> Fallible<()> 
+fn get_keyload<T: Transport>(subscriber: &mut Subscriber, channel_address: &String, keyload_message_identifier: &String, client: &mut T, recv_opt: T::RecvOptions) -> Result<()> 
 where T::RecvOptions: Copy, {
     
      // Convert the channel address and message identifier to an Address link type
@@ -95,26 +91,23 @@ where T::RecvOptions: Copy, {
     };
  
     println!("Receiving keyload messages");
-    let msg = client
-        .recv_message_with_options(&keyload_link, recv_opt)
-        .unwrap();
-    let preparsed = msg.parse_header().unwrap();
+    let msg = client.recv_message_with_options(&keyload_link, recv_opt)?;
+    let preparsed = msg.parse_header()?;
     ensure!(
         preparsed.check_content_type(&message::SEQUENCE),
         "Wrong message type: {}",
         preparsed.header.content_type
     );
-    let msg_tag = subscriber.unwrap_sequence(preparsed.clone()).unwrap();
+    let msg_tag = subscriber.unwrap_sequence(preparsed.clone())?;
 
     // Use the IOTA client to find transactions with the corresponding channel address and tag
-    let list = client.recv_messages_with_options(&msg_tag, recv_opt).unwrap();
+    let list = client.recv_messages_with_options(&msg_tag, recv_opt)?;
 
     // Iterate through all the transactions and stop at the first valid message
     for tx in list.iter() {
-        let header = tx.parse_header().unwrap();
-        dbg!(&header);
-        ensure!(header.check_content_type(&message::KEYLOAD));
-        subscriber.unwrap_keyload(header.clone()).unwrap();
+        let header = tx.parse_header()?;
+        ensure!(header.check_content_type(&message::KEYLOAD), "Content type should be keyload type");
+        subscriber.unwrap_keyload(header.clone())?;
         println!("Found and verified {} message", header.content_type());
         break;
     }
@@ -123,7 +116,7 @@ where T::RecvOptions: Copy, {
 
 
 fn subscribe<T: Transport>(subscriber: &mut Subscriber, channel_address: &String, announce_message_identifier: &String, client: &mut T, send_opt: T::SendOptions) 
-    -> Fallible<()> where T::RecvOptions: Copy, {
+    -> Result<()> where T::RecvOptions: Copy, {
 
      // Convert the channel address and message identifier to a link
      let announcement_link = match Address::from_str(&channel_address, &announce_message_identifier){
@@ -135,8 +128,8 @@ fn subscribe<T: Transport>(subscriber: &mut Subscriber, channel_address: &String
 
     // Send a `Subscribe` message and link it to the message identifier 
     //of the first valid `Announce` message that was found on the Tangle
-    let subscription = subscriber.subscribe(&announcement_link).unwrap();
-    client.send_message_with_options(&subscription, send_opt).unwrap();
+    let subscription = subscriber.subscribe(&announcement_link)?;
+    client.send_message_with_options(&subscription, send_opt)?;
     println!("Published `Subscribe` message");
     println!("Paste this `Subscribe` message identifier into your author's command prompt  {}", subscription.link.msgid);
     Ok(())

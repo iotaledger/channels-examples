@@ -3,7 +3,6 @@
 use iota_streams::{
     app_channels::api::tangle::{Author}
 };
-use iota::client as iota_client;
 
 mod api_author;
 use crate::api_author::announce::start_a_new_channel;
@@ -20,12 +19,13 @@ use iota_streams::app::{
         }
     }
 };
-use std::str::Bytes;
+
 use iota::{
-    ternary as iota_ternary,
+    client as iota_client,
 };
-use core::convert::{
-    TryInto,
+
+use iota_conversion::trytes_converter::{
+    bytes_to_trytes
 };
 
 fn main() {
@@ -49,7 +49,7 @@ fn main() {
     // Create a new channel
     // REPLACE THE SECRET WITH YOUR OWN
     let multi_branching_flag = 1_u8;
-    let mut author = Author::new("MYAUTHORSECRETSTRINGA99999", encoding, PAYLOAD_BYTES, multi_branching_flag == 1_u8);
+    let mut author = Author::new("MYAUTHORSECRETSTRINGAPWOQ9", encoding, PAYLOAD_BYTES, multi_branching_flag == 1_u8);
 
     let channel_address = author.channel_address().to_string();
     
@@ -67,9 +67,9 @@ fn main() {
         channel_address, 
         announce_message.msgid.to_string(), 
         signed_message.msgid.to_string());
-    println!("Tangle Address/channel: {}", bits_to_trytes(author.channel_address().tbits())); 
-    println!("Tangle announce_message tag: {}", bits_to_trytes(signed_message.msgid.tbits())); 
-    println!("Tangle signed_message tag: {}", bits_to_trytes(signed_message.msgid.tbits())); 
+    println!("Tangle Address/channel: {}", bytes_to_trytes(author.channel_address().tbits())); 
+    println!("Tangle announce_message tag: {}", bytes_to_trytes(announce_message.msgid.tbits())); 
+    println!("Tangle signed_message tag: {}", bytes_to_trytes(signed_message.msgid.tbits())); 
 
     let mut subscribe_message_identifier = String::new();
     println!("Enter the message identifier of the `Subscribe` message that was published by the subscriber:");
@@ -92,25 +92,4 @@ fn main() {
     let signed_private_message = send_masked_payload(&mut author, &channel_address, &keyload_message.msgid.to_string(), &public_payload.to_string(), &masked_payload.to_string(), &mut client, send_opt).unwrap();
 
     println!("Paste this `SignedPacket` message identifier in the subscriber's command prompt: {}", signed_private_message.msgid);
-
-}
-
-fn bits_to_trytes(input: &Vec<u8>) -> String {
-    let mut trytes: std::vec::Vec<u8> = Vec::with_capacity(input.len() * 2);
-    for byte in input {
-        let first: i8 = match (byte % 27) as i8 {
-            b @ 0..=13 => b,
-            b @ 14..=26 => b - 27,
-            _ => unreachable!(),
-        };
-        let second = match (byte / 27) as i8 {
-            b @ 0..=13 => b,
-            b @ 14..=26 => b - 27,
-            _ => unreachable!(),
-        };
-
-        trytes.push(char::from(TryInto::<iota_ternary::Tryte>::try_into(first).unwrap()) as u8);
-        trytes.push(char::from(TryInto::<iota_ternary::Tryte>::try_into(second).unwrap()) as u8);
-    }
-    String::from_utf8(trytes).unwrap()
 }

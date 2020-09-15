@@ -44,10 +44,7 @@ fn get_announcement<T: Transport>(subscriber: &mut Subscriber, channel_address: 
 where T::RecvOptions: Copy, {
     
     // Convert the channel address and message identifier to a link
-    let announcement_link = match Address::from_str(&channel_address, &announce_message_identifier){
-        Ok(announcement_link) => announcement_link,
-        Err(()) => bail!("Failed to create Address from {}:{}", &channel_address, &announce_message_identifier),
-    };
+    let announcement_link = find_message_link_opt_sequence(subscriber, channel_address, announce_message_identifier, client, recv_opt)?;
 
     println!("Receiving announcement messages");
 
@@ -85,7 +82,7 @@ where T::RecvOptions: Copy, {
 }
 
 fn find_message_link_opt_sequence<T: Transport>(subscriber: &mut Subscriber, address: &String, message_identifier: &String, client: &mut T, recv_opt: T::RecvOptions) 
- -> Result<Address> where T::RecvOptions: Copy, {
+ -> Result<Address> where T::RecvOptions: Copy {
     // Convert the channel address and message identifier to a link
     let mut message_link = match Address::from_str(&address, &message_identifier){
         Ok(message_link) => message_link,

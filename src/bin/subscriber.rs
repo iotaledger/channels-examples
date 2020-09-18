@@ -30,8 +30,8 @@ where T::RecvOptions: Copy, {
     // Iterate through all the transactions and stop at the first valid message
     for tx in list.iter() {
         let header = tx.parse_header()?;
-        ensure!(header.check_content_type(&message::SIGNED_PACKET), "Content type should be signed type");
-        let (public_payload, masked_payload) = subscriber.unwrap_signed_packet(header.clone())?;
+        ensure!(header.check_content_type(message::SIGNED_PACKET), "Content type should be signed type");
+        let (_signer, public_payload, masked_payload) = subscriber.unwrap_signed_packet(header.clone())?;
         println!("Found and verified messages");
         println!("Public message: {:?}, private message: {:?}", 
             String::from_utf8(public_payload.0), String::from_utf8(masked_payload.0));
@@ -53,7 +53,7 @@ where T::RecvOptions: Copy, {
     // Iterate through all the transactions and stop at the first valid message
     for tx in list.iter() {
         let header = tx.parse_header()?;
-        ensure!(header.check_content_type(&message::ANNOUNCE), "Content type should be announce type");
+        ensure!(header.check_content_type(message::ANNOUNCE), "Content type should be announce type");
         subscriber.unwrap_announcement(header.clone())?;
         println!("Found and verified {} message", header.content_type());
         break;
@@ -73,7 +73,7 @@ where T::RecvOptions: Copy, {
     // Iterate through all the transactions and stop at the first valid message
     for tx in list.iter() {
         let header = tx.parse_header()?;
-        ensure!(header.check_content_type(&message::KEYLOAD), "Content type should be keyload type");
+        ensure!(header.check_content_type(message::KEYLOAD), "Content type should be keyload type");
         subscriber.unwrap_keyload(header.clone())?;
         println!("Found and verified {} message", header.content_type());
         break;
@@ -89,12 +89,12 @@ fn find_message_link_opt_sequence<T: Transport>(subscriber: &mut Subscriber, add
         Err(()) => bail!("Failed to create Address from {}:{}", &address, &message_identifier),
     };
     
-    if subscriber.get_branching_flag() == 1 {
+    if subscriber.is_multi_branching() {
         let msg = client.recv_messages_with_options(&message_link, recv_opt)?;
         for tx in msg.iter() {
             let preparsed = tx.parse_header()?;
             ensure!(
-                preparsed.check_content_type(&message::SEQUENCE),
+                preparsed.check_content_type(message::SEQUENCE),
                 "Wrong message type: {}",
                 preparsed.header.content_type
             );

@@ -51,7 +51,7 @@ fn main() {
     let multi_branching_flag = false;
     let mut author = Author::new("MYAUTHORSEC9ETSTRINGAPWOQ9", encoding, PAYLOAD_BYTES, multi_branching_flag);
 
-    let channel_address = author.channel_address().to_string();
+    let channel_address = author.channel_address().unwrap().to_string();
     
     // Send the `Announce` message
     let announce_message = start_a_new_channel(&mut author, &mut client, send_opt).unwrap();
@@ -67,9 +67,9 @@ fn main() {
         channel_address, 
         announce_message.msgid, 
         signed_message.msgid);
-    println!("Tangle Address/channel: {}", bytes_to_trytes(author.channel_address().tbits())); 
-    println!("Tangle announce_message tag: {}", bytes_to_trytes(announce_message.msgid.tbits())); 
-    println!("Tangle signed_message tag: {}", bytes_to_trytes(signed_message.msgid.tbits())); 
+    println!("Tangle Address/channel: {}", bytes_to_trytes(author.channel_address().unwrap().as_ref())); 
+    println!("Tangle announce_message tag: {}", bytes_to_trytes(announce_message.msgid.as_ref())); 
+    println!("Tangle signed_message tag: {}", bytes_to_trytes(signed_message.msgid.as_ref())); 
 
     let mut subscribe_message_identifier = String::new();
     println!("Enter the message identifier of the `Subscribe` message that was published by the subscriber:");

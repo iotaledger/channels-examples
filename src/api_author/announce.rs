@@ -13,12 +13,8 @@ pub fn start_a_new_channel<T: Transport>(author: &mut Author, client: &mut T, se
     client.send_message_with_options(&announcement, send_opt)?;
     println!("Channel published");
 
-    let channel_address = author.channel_address().to_string();
+    let channel_address = author.channel_address().unwrap().to_string();
     println!("Channel address: {}", &channel_address);
 
     Ok(announcement.link)
 }
-
-
-
-

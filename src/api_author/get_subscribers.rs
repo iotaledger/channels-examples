@@ -22,7 +22,7 @@ pub fn get_subscriptions_and_share_keyload<T: Transport>(author: &mut Author, ch
     let mut found_valid_msg = false;
     for tx in subscribers.iter() {
         let header = tx.parse_header()?;
-        ensure!(header.check_content_type(&message::SUBSCRIBE), "Content type should be subscribe type");
+        ensure!(header.check_content_type(message::SUBSCRIBE), "Content type should be subscribe type");
         // Process the message and read the subscribers' keys
         author.unwrap_subscribe(header.clone())?;
         println!("Found and verified {} message", header.content_type());

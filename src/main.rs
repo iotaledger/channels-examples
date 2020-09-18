@@ -63,7 +63,7 @@ fn main() {
     println!("");
     println!("Now, in a new terminal window, use the subscriber to publish a `Subscribe` message on the channel");
     println!("");    
-    println!("cargo run --release --bin subscriber {} {} {}", 
+    println!("cargo +nightly run --release --bin subscriber {} {} {}", 
         channel_address, 
         announce_message.msgid, 
         signed_message.msgid);

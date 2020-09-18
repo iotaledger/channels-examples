@@ -19,13 +19,13 @@ To get started you need [Git](https://git-scm.com/book/en/v2/Getting-Started-Ins
 
     ```rust
     // REPLACE THE SECRET WITH YOUR OWN
-    let mut author = Author::new("MYAUTHORSECRET", 3, true);
+    let mut author = Author::new("MYAUTHORSECRET");
     ```
 
 3. Start the author and follow the prompts
 
     ```bash
-    cargo run --release --bin author
+    cargo +nightly run --release --bin author
     ```
 
     When you run this command for the first time, it may take a minute or two to download and compile the dependencies.
@@ -41,7 +41,7 @@ To get started you need [Git](https://git-scm.com/book/en/v2/Getting-Started-Ins
 
     Now, in a new terminal window, use the subscriber to publish a `Subscribe` message on the channel
 
-    cargo run --release --bin subscriber XP9QADNJGJOJTOIZDOFAOFKXQADWDKTGEMHFBNOZ9HROIPMVWPBTCUPOVKUYRKKAAFQ9XDBVSJMDALVZJ AEFYSYRVRKKW9CPBRMXHYDNJJWK KLKGMAAQGXPHEJLQKIPKYPHEAFE
+    cargo +nightly run --release --bin subscriber XP9QADNJGJOJTOIZDOFAOFKXQADWDKTGEMHFBNOZ9HROIPMVWPBTCUPOVKUYRKKAAFQ9XDBVSJMDALVZJ AEFYSYRVRKKW9CPBRMXHYDNJJWK KLKGMAAQGXPHEJLQKIPKYPHEAFE
 
     Enter the message identifier of the `Subscribe` message that was published by the subscriber:
     ```
@@ -56,7 +56,7 @@ To get started you need [Git](https://git-scm.com/book/en/v2/Getting-Started-Ins
 5. Copy the `cargo run` command and paste it into a new terminal window to start the subscriber
 
     ```bash
-    cargo run --release --bin subscriber XP9QADNJGJOJTOIZDOFAOFKXQADWDKTGEMHFBNOZ9HROIPMVWPBTCUPOVKUYRKKAAFQ9XDBVSJMDALVZJ AEFYSYRVRKKW9CPBRMXHYDNJJWK KLKGMAAQGXPHEJLQKIPKYPHEAFE
+    cargo +nightly run --release --bin subscriber XP9QADNJGJOJTOIZDOFAOFKXQADWDKTGEMHFBNOZ9HROIPMVWPBTCUPOVKUYRKKAAFQ9XDBVSJMDALVZJ AEFYSYRVRKKW9CPBRMXHYDNJJWK KLKGMAAQGXPHEJLQKIPKYPHEAFE
     ```
 
     The first argument is the channel address, the second argument is the `Announce` message identifier, and the third argument is the `SignedPacket` message identifier.

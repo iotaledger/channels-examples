@@ -1,8 +1,6 @@
 #![cfg_attr(debug_assertions, allow(dead_code, unused_imports))]
 
-use iota_streams::{
-    app_channels::api::tangle::{Author}
-};
+use iota_streams::app_channels::api::tangle::Author;
 
 mod api_author;
 use crate::api_author::announce::start_a_new_channel;
@@ -20,9 +18,7 @@ use iota_streams::app::{
     }
 };
 
-use iota::{
-    client as iota_client,
-};
+use iota::client as iota_client;
 
 use iota_conversion::trytes_converter::{
     bytes_to_trytes
@@ -53,19 +49,20 @@ fn main() {
 
     let channel_address = author.channel_address().unwrap().to_string();
     
-    // Send the `Announce` message
+    // announce_message is a link, thus it contains the channel address (appinst) and message identifier (msgid)
     let announce_message = start_a_new_channel(&mut author).unwrap();
-  
+    let announce_msgid = announce_message.msgid.to_string();
+
     let public_payload = "BREAKINGCHANGES";
 
-    let signed_message = send_signed_message(&mut author, &channel_address, &announce_message.msgid.to_string(), &public_payload.to_string()).unwrap();
-
+    // signed_message is a link, thus it contains the channel address (appinst) and message identifier (msgid)
+    let signed_message = send_signed_message(&mut author, &channel_address, &announce_msgid, &public_payload.to_string()).unwrap();
     println!("");
     println!("Now, in a new terminal window, use the subscriber to publish a `Subscribe` message on the channel");
     println!("");    
     println!("cargo run --release --bin subscriber {} {} {}", 
         channel_address, 
-        announce_message.msgid, 
+        announce_msgid, 
         signed_message.msgid);
     println!("Tangle Address/channel: {}", bytes_to_trytes(author.channel_address().unwrap().as_ref())); 
     println!("Tangle announce_message tag: {}", bytes_to_trytes(announce_message.msgid.as_ref())); 

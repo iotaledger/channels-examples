@@ -2,10 +2,10 @@
 use anyhow::{Result};
 use iota_streams::app_channels::api::tangle::{Author, Transport, Address};
 
-pub fn start_a_new_channel<T: Transport>(author: &mut Author<T>) -> Result<Address> where
-    T::SendOptions: Copy + Default, T::RecvOptions: Copy + Default
-{
+pub fn start_a_new_channel<T: Transport>(author: &mut Author<T>) -> Result<Address> {
     // Create an `Announce` message to start the channel
     println!("Creating a new channel");
-    author.send_announce()
+    let announce_result = author.send_announce()?;
+    println!("Channel published");
+    Ok(announce_result)
 }

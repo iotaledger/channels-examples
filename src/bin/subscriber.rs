@@ -19,10 +19,14 @@ use std::env;
 fn get_signed_messages<T: Transport>(subscriber: &mut Subscriber<T>, channel_address: &String, signed_message_identifier: &String) -> Result<()> {
         
     // Convert the channel address and message identifier to a link
-    let message_link = create_message_link(&channel_address, &signed_message_identifier)?;
+    let message_link = match create_message_link(&channel_address, &signed_message_identifier){
+        Ok(message_link) => message_link,
+        Err(error) => bail!(error),
+    };
 
+    // First returned value is the senders public key. We wont be using that in this tutorial
     let (_, public_payload, masked_payload) = subscriber.receive_signed_packet(&message_link)?;
-    println!("Found and verified messages");
+    println!("Found and verified message");
     println!("Public message: {:?}, private message: {:?}", 
         String::from_utf8(public_payload.0), String::from_utf8(masked_payload.0));
     Ok(())
@@ -31,9 +35,12 @@ fn get_signed_messages<T: Transport>(subscriber: &mut Subscriber<T>, channel_add
 fn get_announcement<T: Transport>(subscriber: &mut Subscriber<T>, channel_address: &String, announce_message_identifier: &String) -> Result<()> {
     
     // Convert the channel address and message identifier to a link
-    let announcement_link = create_message_link(&channel_address, &announce_message_identifier)?;
+    let announcement_link = match create_message_link(&channel_address, &announce_message_identifier){
+        Ok(announcement_link) => announcement_link,
+        Err(error) => bail!(error),
+    };
 
-    println!("Receiving announcement messages");
+    println!("Receiving announcement message");
     subscriber.receive_announcement(&announcement_link)?;
 
     Ok(())
@@ -42,18 +49,21 @@ fn get_announcement<T: Transport>(subscriber: &mut Subscriber<T>, channel_addres
 fn get_keyload<T: Transport>(subscriber: &mut Subscriber<T>, channel_address: &String, keyload_message_identifier: &String) -> Result<()> {
     
     // Convert the channel address and message identifier to an Address link type
-    let keyload_link = create_message_link(&channel_address, &keyload_message_identifier)?;
+    let keyload_link = match create_message_link(&channel_address, &keyload_message_identifier){
+        Ok(keyload_link) => keyload_link,
+        Err(error) => bail!(error),
+    };
 
     // Use the IOTA client to find transactions with the corresponding channel address and tag
     subscriber.receive_keyload(&keyload_link)?;
     Ok(())
 }
 
-fn create_message_link(address: &String, message_identifier: &String) -> Result<Address> {
+fn create_message_link(channel_address: &String, message_identifier: &String) -> Result<Address> {
     // Convert the channel address and message identifier to a link
-    let message_link = match Address::from_str(&address, &message_identifier){
+    let message_link = match Address::from_str(&channel_address, &message_identifier){
         Ok(message_link) => message_link,
-        Err(()) => bail!("Failed to create Address from {}:{}", &address, &message_identifier),
+        Err(()) => bail!("Failed to create Address from {}:{}", &channel_address, &message_identifier),
     };
 
     // Use the IOTA client to find transactions with the corresponding channel address and tag
@@ -76,8 +86,6 @@ fn subscribe<T: Transport>(subscriber: &mut Subscriber<T>, channel_address: &Str
  }
 
  fn main() {
-    // Connect to an IOTA node
-
     // Change the default settings to use a lower minimum weight magnitude for the Devnet
     let mut send_opt = SendTrytesOptions::default();
     // default is 14

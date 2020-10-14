@@ -6,9 +6,7 @@ use iota_streams::app_channels::api::tangle::{
 };
 use anyhow::{Result, bail};
 
-pub fn send_signed_message<T: Transport>(author: &mut Author<T>, channel_address: &String, announce_message_identifier: &String, public_payload: &String) -> Result<Address> 
-    where T::SendOptions: Copy + Default, T::RecvOptions: Copy + Default 
-{
+pub fn send_signed_message<T: Transport>(author: &mut Author<T>, channel_address: &String, announce_message_identifier: &String, public_payload: &String) -> Result<Address> {
 
     // Convert the payloads to a Trytes type
     let public_payload = Bytes(public_payload.as_bytes().to_vec());

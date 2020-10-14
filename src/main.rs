@@ -49,7 +49,7 @@ fn main() {
     // Create a new channel
     // REPLACE THE SECRET WITH YOUR OWN
     let multi_branching_flag = false;
-    let mut author = Author::new("MYAUTHORSEC9ETSTRINGAPWOQ92346237247", encoding, PAYLOAD_BYTES, multi_branching_flag, client);
+    let mut author = Author::new("MYAUTHORSEC9ETSTRINGAPWOQ9", encoding, PAYLOAD_BYTES, multi_branching_flag, client);
 
     let channel_address = author.channel_address().unwrap().to_string();
     

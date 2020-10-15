@@ -8,6 +8,6 @@ edition = "2018"
 
 [dependencies]
 anyhow = { version = "1.0", default-features = false }
-iota-streams = { git = "https://github.com/iotaledger/streams", branch  = "develop"}
+iota-streams = { git = "https://github.com/iotaledger/streams", branch  = "master"}
 iota-conversion = { git = "https://github.com/iotaledger/iota.rs", rev = "03cf531" }
 iota-core = { git = "https://github.com/iotaledger/iota.rs", rev = "0ad8e7f" }

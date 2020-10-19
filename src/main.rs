@@ -20,10 +20,6 @@ use iota_streams::app::{
 
 use iota::client as iota_client;
 
-use iota_conversion::trytes_converter::{
-    bytes_to_trytes
-};
-
 fn main() {
 
     //  -------- IOTA network settings ---------
@@ -64,9 +60,9 @@ fn main() {
         channel_address, 
         announce_msgid, 
         signed_message.msgid);
-    println!("Tangle Address/channel: {}", bytes_to_trytes(author.channel_address().unwrap().as_ref())); 
-    println!("Tangle announce_message tag: {}", bytes_to_trytes(announce_message.msgid.as_ref())); 
-    println!("Tangle signed_message tag: {}", bytes_to_trytes(signed_message.msgid.as_ref())); 
+    println!("Tangle Address/channel: {}", iota_client::bytes_to_trytes(author.channel_address().unwrap().as_ref())); 
+    println!("Tangle announce_message tag: {}", iota_client::bytes_to_trytes(announce_message.msgid.as_ref())); 
+    println!("Tangle signed_message tag: {}", iota_client::bytes_to_trytes(signed_message.msgid.as_ref())); 
 
     let mut subscribe_message_identifier = String::new();
     println!("Enter the message identifier of the `Subscribe` message that was published by the subscriber:");

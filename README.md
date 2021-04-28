@@ -42,9 +42,6 @@ To get started you need [Git](https://git-scm.com/book/en/v2/Getting-Started-Ins
    Now, in a new terminal window, use the subscriber to publish a `Subscribe` message on the channel
 
    cargo +nightly run --release --bin subscriber 276f7c4ecca06dda9f46480fae75364a0b8f995f9ffad7ab354c8fc806b4d7660000000000000000 bf48e8635ef335611e5db26e 6ae36d590eae46fe3b1fa219
-   Tangle Address/channel: LACDPDXBOGYEADBHXEPBRBO9LFID9BTBK9HERENCXEGIZGIFZAVBHEKGF9RFZGUC9999999999999999
-   Tangle announce_message tag: BGRBPHRCMC9IZAPCCALCPFBD
-   Tangle signed_message tag: YCKHADHCN9LFPBKIEBDA9FY9
 
    Enter the message identifier of the `Subscribe` message that was published by the subscriber:
    ```

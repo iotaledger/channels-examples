@@ -11,10 +11,7 @@ pub fn send_masked_payload<T: Transport>(
     public_payload: &String,
     masked_payload: &String,
 ) -> Result<Address>
-where
-    T::SendOptions: Copy + Default,
-    T::RecvOptions: Copy + Default,
-{
+where {
     // Convert the payloads to a Trytes type
     let public_payload = Bytes(public_payload.as_bytes().to_vec());
     let masked_payload = Bytes(masked_payload.as_bytes().to_vec());

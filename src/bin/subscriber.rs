@@ -121,9 +121,9 @@ async fn main() {
 
     // Create a new subscriber
     // REPLACE THE SECRET WITH YOUR OWN
-    let encoding = "utf-8";
     let mut subscriber =
-        Subscriber::new("MYSUBSCRIBERSECRETSTRING", encoding, PAYLOAD_BYTES, client);
+        Subscriber::new("MYSUBSCRIBERSECRETSTRING",
+        client);
 
     let args: Vec<String> = env::args().collect();
 

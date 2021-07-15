@@ -1,6 +1,6 @@
 #![cfg_attr(debug_assertions, allow(dead_code, unused_imports))]
 
-use iota_streams::app_channels::api::tangle::Author;
+use iota_streams::app_channels::api::tangle::{Author, ChannelType};
 
 mod api_author;
 use crate::api_author::announce::start_a_new_channel;
@@ -33,18 +33,13 @@ async fn main() {
             .unwrap(),
     );
 
-    let encoding = "utf-8";
-
     // --------------- Author -------------------
 
     // Create a new channel
     // REPLACE THE SECRET WITH YOUR OWN
-    let multi_branching_flag = false;
     let mut author = Author::new(
         "MYAUTHORSEC9ETSTRING",
-        encoding,
-        PAYLOAD_BYTES,
-        multi_branching_flag,
+        ChannelType::SingleBranch,
         client,
     );
 

@@ -7,11 +7,7 @@ pub fn get_subscriptions_and_share_keyload<T: Transport>(
     author: &mut Author<T>,
     channel_address: &String,
     subscribe_message_identifier: &String,
-) -> Result<Address>
-where
-    T::SendOptions: Copy + Default,
-    T::RecvOptions: Copy + Default,
-{
+) -> Result<Address> {
     println!("Receiving Subscribe messages");
 
     // Use the IOTA client to find transactions with the corresponding channel address and tag

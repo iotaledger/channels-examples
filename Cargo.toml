@@ -8,5 +8,5 @@ edition = "2018"
 
 [dependencies]
 anyhow = { version = "1.0", default-features = false }
-iota-streams = { git = "https://github.com/iotaledger/streams", branch  = "chrysalis-2"}
+iota-streams = { git = "https://github.com/iotaledger/streams", branch  = "develop"}
 tokio = { version = "1.5.0", features = ["full"] }
